@@ -27,7 +27,6 @@ export default function HabitForm({ onSubmit }) {
   return (
     <form onSubmit={handleSubmit} className="card bg-white border-2 border-primary/20">
       <div className="space-y-4">
-        {/* Habit Name */}
         <div>
           <label className="block text-sm font-medium text-foreground mb-2">Habit Name</label>
           <input
@@ -39,7 +38,6 @@ export default function HabitForm({ onSubmit }) {
           />
         </div>
 
-        {/* Description */}
         <div>
           <label className="block text-sm font-medium text-foreground mb-2">Description (optional)</label>
           <textarea
@@ -70,7 +68,6 @@ export default function HabitForm({ onSubmit }) {
           </div>
         </div>
 
-        {/* Submit Button */}
         <button type="submit" className="w-full btn-primary mt-6">
           Create Habit
         </button>
