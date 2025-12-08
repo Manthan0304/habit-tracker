@@ -48,7 +48,6 @@ function authMiddleware(req, res, next) {
   }
 }
 
-// Register
 app.post('/auth/register', (req, res) => {
   const { email, password } = req.body
   if (!email || !password) return res.status(400).json({ error: 'Email and password required' })
@@ -63,7 +62,6 @@ app.post('/auth/register', (req, res) => {
   res.json({ user: { id: user.id, email: user.email }, token })
 })
 
-// Login
 app.post('/auth/login', (req, res) => {
   const { email, password } = req.body
   if (!email || !password) return res.status(400).json({ error: 'Email and password required' })
@@ -76,14 +74,12 @@ app.post('/auth/login', (req, res) => {
   res.json({ user: { id: user.id, email: user.email }, token })
 })
 
-// json-server to serve /api routes
 const router = jsonServer.router(DATA_FILE)
 const middlewares = jsonServer.defaults()
 
-// Helper to calculate streak
 function calculateStreak(checkIns) {
   if (!checkIns || checkIns.length === 0) return 0
-  const sorted = [...checkIns].sort((a, b) => (a < b ? 1 : -1)) // desc
+  const sorted = [...checkIns].sort((a, b) => (a < b ? 1 : -1))
   const today = new Date()
   let streak = 0
   for (let i = 0; i < sorted.length; i++) {
@@ -100,7 +96,6 @@ function calculateStreak(checkIns) {
   return streak
 }
 
-// Custom route for check-in
 app.post('/api/habits/:id/check-in', authMiddleware, (req, res) => {
   const db = readDb()
   const habit = db.habits.find((h) => h.id === req.params.id)
@@ -113,7 +108,6 @@ app.post('/api/habits/:id/check-in', authMiddleware, (req, res) => {
   res.json(habit)
 })
 
-// Custom route for undo-check-in
 app.post('/api/habits/:id/undo-check-in', authMiddleware, (req, res) => {
   const db = readDb()
   const habit = db.habits.find((h) => h.id === req.params.id)
@@ -125,15 +119,11 @@ app.post('/api/habits/:id/undo-check-in', authMiddleware, (req, res) => {
   res.json(habit)
 })
 
-// Middleware to protect write routes for habits and attach user owner
 app.use('/api/habits', (req, res, next) => {
-  // Allow GET without auth for compatibility
   if (req.method === 'GET') return next()
-  // For POST/PUT/DELETE, require auth
   return authMiddleware(req, res, next)
 })
 
-// When creating a habit, attach user id from token
 app.post('/api/habits', authMiddleware, (req, res) => {
   const db = readDb()
   const body = req.body || {}
@@ -154,14 +144,11 @@ app.post('/api/habits', authMiddleware, (req, res) => {
   res.status(201).json(newHabit)
 })
 
-// Router: expose remaining json-server endpoints under /api
 app.use('/api', middlewares)
 app.use('/api', (req, res, next) => {
-  // For GET /api/habits we want to include streak calculation and, when authenticated, filter by user
   if (req.method === 'GET' && req.path === '/habits') {
     const db = readDb()
     let habits = db.habits || []
-    // if Authorization header present and valid, filter to that user
     const auth = req.headers.authorization
     if (auth) {
       try {
@@ -169,10 +156,9 @@ app.use('/api', (req, res, next) => {
         const payload = jwt.verify(token, SECRET)
         habits = habits.filter((h) => !h.userId || h.userId === payload.id)
       } catch (e) {
-        // invalid token -> treat as unauthenticated and return public habits
+        // ignore invalid token
       }
     }
-    // calculate streaks
     habits.forEach((h) => {
       h.streak = calculateStreak(h.check_ins || [])
     })
@@ -181,7 +167,6 @@ app.use('/api', (req, res, next) => {
   next()
 })
 
-// Fallback to json-server router for other RESTful operations
 app.use('/api', router)
 
 app.listen(PORT, () => {

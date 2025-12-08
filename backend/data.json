@@ -1,4 +1,16 @@
 {
+  "users": [
+    {
+      "id": "1765172366324",
+      "email": "manthansingla786@gmail.com",
+      "password": "$2a$08$bp28e1fbIe8wkG3Xs4bzE.U0CZnVRYdR6647QpF0MObbb1RYYY6Ky"
+    },
+    {
+      "id": "1765173392804",
+      "email": "aaryan@gmail.com",
+      "password": "$2a$08$pwSPXO6aFtvDFmQETU22WOf7IfYc1qkXzMxwSObacseP1Oyav4II6"
+    }
+  ],
   "habits": [
     {
       "id": "1764924578274",
@@ -6,10 +18,33 @@
       "description": "everyday for 2 hours \nhimanshu sir is great he will give us marks",
       "color": "#ec4899",
       "check_ins": [
-        "2025-12-05"
+        "2025-12-05",
+        "2025-12-08"
       ],
       "created_at": "2025-12-05T14:19:38.274096",
       "streak": 1
+    },
+    {
+      "id": "1765173756310",
+      "name": "jf3oin",
+      "description": "nfiownv",
+      "color": "#6366f1",
+      "check_ins": [
+        "2025-12-08"
+      ],
+      "created_at": "2025-12-08T06:02:36.310Z",
+      "streak": 1,
+      "userId": "1765173392804"
+    },
+    {
+      "id": "1765173909176",
+      "name": "morning meditation",
+      "description": "everyday for 1 hour",
+      "color": "#6366f1",
+      "check_ins": [],
+      "created_at": "2025-12-08T06:05:09.176Z",
+      "streak": 0,
+      "userId": "1765172366324"
     }
   ]
 }

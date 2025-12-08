@@ -1,11 +1,22 @@
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { BarChart3, Home } from "lucide-react"
+import { dispatchUserChangeEvent } from "@/hooks/useUserChange"
 import "@/styles/globals.css"
 
 export default function Navigation() {
   const location = useLocation()
+  const navigate = useNavigate()
 
   const isActive = (path) => location.pathname === path
+
+  const user = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('user') || 'null') : null
+
+  const logout = () => {
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
+    dispatchUserChangeEvent()
+    navigate('/')
+  }
 
   return (
     <nav style={{
@@ -71,6 +82,14 @@ export default function Navigation() {
           <BarChart3 size={20} />
           Statistics
         </Link>
+        {!user ? (
+          <>
+            <Link to="/login" style={{ padding: '8px 12px', textDecoration: 'none' }}>Login</Link>
+            <Link to="/register" style={{ padding: '8px 12px', textDecoration: 'none' }}>Register</Link>
+          </>
+        ) : (
+          <button onClick={logout} style={{ padding: '8px 12px' }}>Logout</button>
+        )}
       </div>
     </nav>
   )

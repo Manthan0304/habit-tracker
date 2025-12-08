@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
-import axios from "axios"
+import axios from "@/lib/api"
 import { TrendingUp, Calendar, Flame, Target } from "lucide-react"
+import { useUserChange } from "@/hooks/useUserChange"
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000"
 
@@ -13,10 +14,15 @@ export default function Statistics() {
     fetchHabits()
   }, [])
 
+  // Refetch habits when user changes (login/logout)
+  useUserChange(() => {
+    fetchHabits()
+  })
+
   const fetchHabits = async () => {
     try {
       setLoading(true)
-      const response = await axios.get(`${API_BASE_URL}/api/habits`)
+      const response = await axios.get(`/api/habits`)
       setHabits(response.data)
       setError("")
     } catch (err) {

@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react"
-import axios from "axios"
+import axios from "@/lib/api"
 import HabitList from "@/components/habit-list"
 import HabitForm from "@/components/habit-form"
+import { useUserChange } from "@/hooks/useUserChange"
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000"
 
@@ -15,10 +16,15 @@ export default function Home() {
     fetchHabits()
   }, [])
 
+  // Refetch habits when user changes (login/logout)
+  useUserChange(() => {
+    fetchHabits()
+  })
+
   const fetchHabits = async () => {
     try {
       setLoading(true)
-      const response = await axios.get(`${API_BASE_URL}/api/habits`)
+      const response = await axios.get(`/api/habits`)
       setHabits(response.data)
       setError("")
     } catch (err) {
@@ -31,7 +37,7 @@ export default function Home() {
 
   const handleAddHabit = async (habitData) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/api/habits`, habitData)
+      const response = await axios.post(`/api/habits`, habitData)
       setHabits([...habits, response.data])
       setShowForm(false)
       setError("")
@@ -43,7 +49,7 @@ export default function Home() {
 
   const handleCheckIn = async (habitId) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/api/habits/${habitId}/check-in`)
+      const response = await axios.post(`/api/habits/${habitId}/check-in`)
       setHabits(habits.map((h) => (h.id === habitId ? response.data : h)))
       setError("")
     } catch (err) {
@@ -54,7 +60,7 @@ export default function Home() {
 
   const handleUndoCheckIn = async (habitId) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/api/habits/${habitId}/undo-check-in`)
+      const response = await axios.post(`/api/habits/${habitId}/undo-check-in`)
       setHabits(habits.map((h) => (h.id === habitId ? response.data : h)))
       setError("")
     } catch (err) {
@@ -65,7 +71,7 @@ export default function Home() {
 
   const handleDeleteHabit = async (habitId) => {
     try {
-      await axios.delete(`${API_BASE_URL}/api/habits/${habitId}`)
+      await axios.delete(`/api/habits/${habitId}`)
       setHabits(habits.filter((h) => h.id !== habitId))
       setError("")
     } catch (err) {
